@@ -1,11 +1,11 @@
 {
-  "name": "docker_web_app",
-  "version": "1.0.0",
-  "description": "node.js on docker",
+  "name": "Test BTC price",
+  "version": "0.0.2",
+  "description": "Test BTC price on docker",
   "author": "Maksym Melnyk <maximmelnikd@gmail.com>",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "nodemailer": "^6.7.7"
