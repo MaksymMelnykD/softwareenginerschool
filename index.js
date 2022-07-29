@@ -2,6 +2,8 @@ let http = require('http');
 let https = require('https');
 let fs = require('fs');
 
+let port = 8080;
+
 const nodemailer = require('nodemailer');
 let transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
@@ -11,8 +13,6 @@ let transporter = nodemailer.createTransport({
         pass: "ercswcoljoaabxek"
     }
 });
-
-let port = 8080;
 
 const btcUrlOptions = {
   hostname: "api1.binance.com",
@@ -37,7 +37,7 @@ function returnBtcPrice(resp) {
     });
 
     req.end();
-};
+}
 
 function returnRootPage(resp) {
     fs.readFile('index.html', "utf8", function (error, data) {
@@ -55,7 +55,6 @@ function returnRootPage(resp) {
 }
 
 function subscribe(email, resp){
-    console.log(email);
     fs.readFile('./email.txt', function (error, data) {
         if (error) {
             console.log(error);
@@ -66,40 +65,37 @@ function subscribe(email, resp){
                 resp.write("ERROR")
             } else {
                 fs.appendFile('./email.txt', `${email}\n`, function (error) {
-                if (error) {
+                    if (error) {
                     console.log(error);
                     resp.writeHead(400);
                     resp.write('ERROR');
-                } else {
-                    resp.writeHead(200, { 'Content-Type': 'text/html' });
-                    resp.write("OK");
-                };
-
-                resp.end(); 
-            });
+                    } else {
+                        resp.writeHead(200, { 'Content-Type': 'text/html' });
+                        resp.write("OK");
+                    };
+                    resp.end(); 
+                });
             }
-
         }
     })
-
-};
+}
 
 
 function createMail(to, btc) {
     let message = {
-         from: "Максимильян",
+         from: "Maksym Melnyk",
          to: to,
          subject: "Курс ВТС зараз",
          text: btc
     };
-    console.log('BTC price', btc);
     return message;
 }
 
 function sendEmails(resp) {
     fs.readFile('./email.txt', function (error, data) {
         if (error) {
-            console.log(error);
+            resp.writeHead(409);
+            resp.writeHead("ERROR")
         } else {
             let arrayEmails = data.toString().split('\n');
             const req = https.request(btcUrlOptions, res => {
@@ -115,8 +111,9 @@ function sendEmails(resp) {
                         });
                     })
                 });
+                resp.writeHead(200, { 'Content-Type': 'text/html' });
+                resp.write("OK");
             });
-
             req.on('error', error => {
                 console.log(error);
             });
@@ -126,7 +123,6 @@ function sendEmails(resp) {
 };
 
 const server = http.createServer(function (req, resp) {
-    console.log("Requested: ", req.url);
     if (req.url === "/api/rate.json") {
         returnBtcPrice(resp);
     } else if (req.url === "/") {
