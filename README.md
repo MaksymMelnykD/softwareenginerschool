@@ -1,3 +1,4 @@
+Перед запуском у файлі index.js у полях user та pass (12 та 13 строки) вписати свої данні gmail. У user - адресу пошти, у pass - пароль, у місце між ""
 Для запуску проекту потрібно:
 ```git clone https://github.com/MaksymMelnykD/softwareenginerschool```
 ```npm install```
